@@ -9,36 +9,43 @@ import os
 from Assignment import Assignment 
 import requests
 
-
+# Gemini api setup stuffs
 API_KEY = "AIzaSyDve4yDbHBo71L2LRtZIvzMbNgpwMizshc"
 MODEL = "gemini-2.5-flash"  
 URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={API_KEY}"
 
+# File path
 RECORD_PATH = 'assignment_records.txt'                                      
                                       
 def main():    
+
+    # Main loop
     cont = 'y'                                  
     while cont == 'y':
-        os.system('cls')
+        os.system('cls || clear')
         assignments = get_assigments(RECORD_PATH)
+
+        # Choose action
         choice = 3
         if assignments:
             try:
                 choice = int(input("1 for sort by due date, 2 for sort by difficulty, 3 for adding assigments: "))
             except ValueError:
                 choice = 1
-            pass
         
         if choice == 1:
+            # Displays by duedate
             display_assignments(assignments)
             input('Enter to return')
         elif choice == 2:
+            # Displays by duedate
             display_assignments(assignments, ordering='diff')
             input('Enter to return')
         elif choice == 3: 
+            # Add assignment loop
             inp = 'y'
             while inp != 'n':
-                os.system('cls')
+                os.system('cls || clear')
                 write_assignment_to_file(
                     get_input(),
                     RECORD_PATH
@@ -47,6 +54,7 @@ def main():
             assignments = get_assigments(RECORD_PATH)
         cont = input("continue program? (y/n): ")
 
+# Retrives assigments from file and makes Assigment object 
 def get_assigments(path):
     assignments = []
     try:
@@ -59,6 +67,7 @@ def get_assigments(path):
             pass
     return assignments
 
+# Call gemini to sort assigments based on difficulty and rank them return the reordered list of assigments
 def get_difficulty_sorted(assignments):
     prompt = (
         "Rate each assignment on difficulty from 0 to 10 and "
@@ -92,6 +101,7 @@ def get_difficulty_sorted(assignments):
         print(f"Error: {response.status_code} - {response.text}")
         return []
 
+# Get input
 def get_input():
     assignment_name = input('Name of assignment: ')
     due_date = input("Enter date of due (mm/dd/yy): ")
@@ -99,6 +109,7 @@ def get_input():
     subject = subject if subject != 'x' else ''
     return f'{assignment_name}|{due_date}|{subject}'
 
+# Write to file
 def write_assignment_to_file(input, path):
     try: 
         with open(path, 'a') as file:
@@ -106,7 +117,7 @@ def write_assignment_to_file(input, path):
     except FileNotFoundError:
         print('Failed')
 
-
+# display assigments based on sorting
 def display_assignments(assignment_list, ordering = 'due'):
     os.system('cls')
     l = []

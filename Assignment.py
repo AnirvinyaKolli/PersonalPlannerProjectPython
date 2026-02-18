@@ -9,6 +9,7 @@ class Assignment():
         if subject != '':
             self.subject = subject
 
+    # Formates them
     def __str__(self):
         f_a = f'{self.name} \n\t Due: {self.due_date}'
         try:
